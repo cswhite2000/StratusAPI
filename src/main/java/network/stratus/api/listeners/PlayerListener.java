@@ -40,7 +40,10 @@ public class PlayerListener implements Listener {
 
             Boolean banned = (Boolean)jsonObject.get("banned");
 
-            Player player = Bukkit.getPlayer(uuid);
+            Player player = event.getPlayer();
+            if (player == null || !player.isOnline()) {
+                return;
+            }
 
             if (banned) {
                 player.kickPlayer("You're banned!");
