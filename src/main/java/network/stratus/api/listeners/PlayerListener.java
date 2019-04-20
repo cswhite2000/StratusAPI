@@ -35,9 +35,6 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onLogin(PlayerLoginEvent event) {
 
-        System.out.println(event.getPlayer().getDisplayName());
-        System.out.println(event.getPlayer().getName());
-
         //The lambda will be run on the main thread, but the http request will not
         requestHandler.getPlayerInformation(event.getPlayer().getUniqueId(), (jsonObject, uuid) -> {
 
@@ -50,7 +47,6 @@ public class PlayerListener implements Listener {
             }
 
             PermissionAttachment attachment = player.addAttachment(plugin);
-
 
             LinkedHashMap<String, LinkedHashMap> hashMap = (LinkedHashMap<String, LinkedHashMap>) jsonObject.get("permissions");
 
@@ -65,6 +61,10 @@ public class PlayerListener implements Listener {
                 }
             });
             attachmentHashMap.put(uuid, attachment);
+
+            if (!player.hasPermission("network.stratus.login")) {
+                player.kickPlayer("You do not have permission to be on this server!");
+            }
 
             ArrayList<HashMap<String, Object>> flairs = (ArrayList<HashMap<String, Object>>) jsonObject.get("flairs");
 

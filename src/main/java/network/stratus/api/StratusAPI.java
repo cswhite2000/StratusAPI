@@ -16,7 +16,6 @@ public class StratusAPI extends JavaPlugin {
 
         String ip = getConfig().getString("ip");
         String port = getConfig().getString("port");
-        System.out.println(ip + ":" + port);
         Bukkit.broadcastMessage(ip);
         Bukkit.broadcastMessage(port);
 
