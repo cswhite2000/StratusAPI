@@ -1,0 +1,8 @@
+main: network.stratus.api.StratusAPI
+name: StratusAPI
+version: 0.1
+authors: [cs_]
+description: This plugin reads and applies permissions data from the Stratus Backend
+permissions:
+  permissions.build:
+    default: true
