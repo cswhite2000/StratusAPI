@@ -6,7 +6,7 @@
 
     <groupId>network.stratus</groupId>
     <artifactId>StratusAPI</artifactId>
-    <version>0.1</version>
+    <version>1.0</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -42,9 +42,9 @@
             <version>2.7.4</version>
         </dependency>
         <dependency>
-            <groupId>tc.oc</groupId>
-            <artifactId>sportbukkit-api</artifactId>
-            <version>1.12.2-R0.1-SNAPSHOT</version>
+            <groupId>network.stratus</groupId>
+            <artifactId>sportpaper-api</artifactId>
+            <version>1.8.8-R0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.sk89q</groupId>
