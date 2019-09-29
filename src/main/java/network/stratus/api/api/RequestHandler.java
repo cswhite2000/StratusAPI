@@ -25,7 +25,7 @@ public class RequestHandler {
         config.register(JacksonJsonProvider.class);
         client = ClientBuilder.newClient(config);
 
-        url = "http://" + ip + ":" + port + "/users/";
+        url = "https://" + ip + ":" + port + "/users/";
         javaPlugin = plugin;
     }
 
