@@ -4,6 +4,7 @@ import com.fasterxml.jackson.jaxrs.json.JacksonJsonProvider;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.glassfish.jersey.client.ClientConfig;
+import org.glassfish.jersey.client.ClientProperties;
 import org.json.simple.JSONObject;
 
 import javax.ws.rs.client.Client;
@@ -23,6 +24,7 @@ public class RequestHandler {
         ClientConfig config = new ClientConfig();
         config.register(JacksonJsonProvider.class);
         client = ClientBuilder.newClient(config);
+
         url = "http://" + ip + ":" + port + "/users/";
         javaPlugin = plugin;
     }
@@ -35,6 +37,7 @@ public class RequestHandler {
                 try {
                     JSONObject jsonObject = client.target(url + "by_uuid/" + uuid)
                         .request(MediaType.APPLICATION_JSON)
+                        .property(ClientProperties.FOLLOW_REDIRECTS, Boolean.TRUE)
                         .get(JSONObject.class);
 
                     Bukkit.getScheduler().runTask(javaPlugin, () -> onResultAction.onResponse(jsonObject, uuid));
