@@ -7,11 +7,21 @@ import org.glassfish.jersey.client.ClientConfig;
 import org.glassfish.jersey.client.ClientProperties;
 import org.json.simple.JSONObject;
 
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 
 import javax.ws.rs.core.MediaType;
 import java.net.URISyntaxException;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
 import java.util.UUID;
 
 public class RequestHandler {
@@ -23,10 +33,61 @@ public class RequestHandler {
     public RequestHandler(String ip, String port, JavaPlugin plugin) throws URISyntaxException {
         ClientConfig config = new ClientConfig();
         config.register(JacksonJsonProvider.class);
-        client = ClientBuilder.newClient(config);
+        HostnameVerifier hostnameVerifier = HttpsURLConnection.getDefaultHostnameVerifier();
+
+        try {
+            client = createSLLClient(config);
+        } catch (KeyManagementException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
 
         url = "https://" + ip + ":" + port + "/users/";
         javaPlugin = plugin;
+    }
+
+    /**
+     * Creates the sll client.
+     *
+     * @param clientConfig
+     *            the client config
+     * @return the client config
+     * @throws KeyManagementException
+     *             the key management exception
+     * @throws NoSuchAlgorithmException
+     *             the no such algorithm exception
+     */
+    private Client createSLLClient(ClientConfig clientConfig)
+        throws KeyManagementException, NoSuchAlgorithmException {
+        TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
+            public X509Certificate[] getAcceptedIssuers() {
+                return null;
+            }
+
+            public void checkClientTrusted(X509Certificate[] certs, String authType) {
+            }
+
+            public void checkServerTrusted(X509Certificate[] certs, String authType) {
+            }
+        } };
+
+        SSLContext sc = SSLContext.getInstance("TLS");
+        sc.init(null, trustAllCerts, new SecureRandom());
+        HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+
+        ClientBuilder.newClient(clientConfig);
+
+        Client client = ClientBuilder.newBuilder()
+            .sslContext(sc)
+            .hostnameVerifier(new HostnameVerifier() {
+                public boolean verify(String s, SSLSession sslSession) {
+                    return true;
+                }
+            })
+            .withConfig(clientConfig).build();
+
+        return client;
     }
 
     public void getPlayerInformation(UUID uuid, OnResultAction onResultAction, OnResultAction onFailure) {
