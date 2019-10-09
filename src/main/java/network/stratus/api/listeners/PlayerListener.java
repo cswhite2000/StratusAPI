@@ -89,7 +89,9 @@ public class PlayerListener implements Listener {
         }, (jsonObject, uuid) -> {
             //api call failed, so kick the player;
             Player player = Bukkit.getPlayer(uuid);
-            player.kickPlayer("Please join the main stratus server before joining this server");
+            if (!player.isOp()) {
+                player.kickPlayer("Please join the main stratus server before joining this server");
+            }
         });
     }
 
